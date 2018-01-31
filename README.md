@@ -1,6 +1,6 @@
 # tebaker.github.io
 
-# PART A: [3D Scene](tebaker.github.io/partA)
+# PART A: [3D Scene](tebaker.github.io/hw1/partA.html)
   ## Controls:
   * W, A, S, D keys move the Icosahedron object around the screen
   * Z, X brightens and dims point light #1
