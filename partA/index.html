@@ -1,0 +1,203 @@
+<html>
+  <head>
+    <title>3D Scene</title>
+    <style>
+      body {
+        margin: 0;
+        background-color: rgb(237, 215, 247);
+      }
+      canvas { width: 100%; height: 100% }
+    </style>
+  </head>
+  <body>
+    <h2 class="name">Talon Baker</h2>
+    <script src="js/three.js"></script>
+    <script src="js/OrbitControls.js"></script>
+    <script src="js/KeyboardState.js"></script>
+    <script>
+      // getting new clock for scene
+      var clock = 0;
+
+      // creating scene to hold all the stuff
+      var scene = new THREE.Scene();
+
+      // creating renderer for the scene
+      var renderer = new THREE.WebGLRenderer();
+      renderer.setSize( window.innerWidth, window.innerHeight );
+      document.body.appendChild( renderer.domElement );
+
+      // setting background color to white
+      scene.background = new THREE.Color( "rgb(237, 215, 247)" );
+
+      // camera( fov, aspect, near, far )
+      var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+
+      // adding orbit mouse click/drag/scroll control
+      var controls = new THREE.OrbitControls( camera, renderer.domElement );
+
+      // adding keyboard control
+      var keyboard = new KeyboardState();
+
+      // instantiating a loader
+      var loader = new THREE.JSONLoader();
+      loader.load("assets/dice.json", handle_load);
+
+      var dice;
+
+      function handle_load( geometry, materials ) {
+        var material = new THREE.MeshPhongMaterial( {
+          // color: 0x000000,
+          map: new THREE.TextureLoader().load( "assets/diceSkin.png" )
+        });
+        dice = new THREE.Mesh( geometry, material );
+        //scaling up my small dice model
+        dice.scale.set( 100, 100, 100 );
+        scene.add( dice );
+      }
+
+
+      // instantiating a loader
+      var loader = new THREE.JSONLoader();
+      loader.load("assets/scissor.json", handle_load1);
+
+      var screw;
+
+      function handle_load1( geometry, materials ) {
+        var material = new THREE.MeshPhongMaterial( {
+          // color: 0x000000,
+          map: new THREE.TextureLoader().load( "assets/lego.jpg" )
+        });
+        screw = new THREE.Mesh( geometry, material );
+        //scaling up my small dice model
+        screw.scale.set( 2, 2, 2 );
+        screw.position.set( 3.8, 0.6, -0.5 );
+        scene.add( screw );
+      }
+
+      // adding box to scene
+      var icoGeometry = new THREE.IcosahedronGeometry( 1, 0 );
+      var icoMaterial = new THREE.MeshLambertMaterial( { color: 0xfd59d7 } );
+      var ico = new THREE.Mesh( icoGeometry, icoMaterial );
+      ico.position.set( -3, 0, 0 );
+      scene.add( ico );
+
+      // adding plane as floor of scene
+      var planeGeometry = new THREE.PlaneGeometry( 10, 5 );
+      // rotating the plane to be horizontal
+      planeGeometry.rotateX( - Math.PI / 2 );
+
+      var planeMaterial = new THREE.MeshPhongMaterial( {
+          color: 0xffffff,
+          map: new THREE.TextureLoader().load("assets/wood.jpg")
+        });
+      
+      var plane = new THREE.Mesh( planeGeometry, planeMaterial );
+      plane.position.y = -1;
+      plane.receiveShadow = true;
+      plane.position.set( 0, -1, 0 );
+
+      scene.add( plane );
+
+      // PointLight: like a light bulb, shines in every direction, limited range
+      var pointLight = new THREE.PointLight( 0xffffff );
+      pointLight.position.set( 0, 2, 0 );
+      scene.add( pointLight );
+
+      var pointLight2 = new THREE.PointLight( 255 );
+      pointLight2.position.set( 0, 0, 1 );
+      scene.add( pointLight2 );
+
+      var pointLight3 = new THREE.PointLight( 0x00ff00 );
+      pointLight3.position.set( 0, 1, 0 );
+      scene.add( pointLight3 );
+
+      // adding box to scene
+      var sphGeometry = new THREE.SphereGeometry( 0.5, 32, 32 );
+      var sphMaterial = new THREE.MeshLambertMaterial( { color: 0xfffff0 } );
+      var sph = new THREE.Mesh( sphGeometry, sphMaterial );
+      sph.position.set( 0, 1, 0 );
+      scene.add( sph );
+
+      // adding words to the scene
+      var loader = new THREE.FontLoader();
+      loader.load( 'assets/helvetiker_regular.typeface.json', function ( font ) {
+
+        var textGeometry = new THREE.TextGeometry( "W A S D ->",
+        {
+          font: font,
+
+          size: 0.4,
+          height: 0.05,
+          curveSegments: 0.05,
+
+          bevelThickness: 0.05,
+          bevelSize: 0.05,
+          bevelEnabled: true
+
+        });
+
+        var textMaterial = new THREE.MeshPhongMaterial( 
+          { color: 0xff0000, specular: 0xffffff }
+        );
+
+        var mesh = new THREE.Mesh( textGeometry, textMaterial );
+        mesh.position.set( -6.5, 1.5, 0 );
+        mesh.rotateZ( - Math.PI / 6 );
+        scene.add( mesh );
+
+      }); 
+
+      camera.position.set( 0, 5, 12 );
+      camera.rotateX( - Math.PI / 2 );
+
+      var render = function () {
+        requestAnimationFrame( render );
+
+        update();
+
+        // rotating dice
+        dice.rotation.x += 0.01;
+        dice.rotation.y += 0.01;
+
+        clock += 0.01;
+
+        pointLight2.position.set( 7 * Math.sin( clock ), 0, 1 );
+
+        screw.position.set( 3.8, 2 * Math.sin( 4 * clock ), -0.5 );
+
+        pointLight3.position.set( -5 * Math.sin( clock ), -5 * Math.cos( clock ), 0 );
+        sph.position.set( -5 * Math.sin( clock ), -5 * Math.cos( clock ), 0 );
+
+        renderer.render(scene, camera);
+      };
+
+      function update()
+      {
+        keyboard.update();
+
+        if( keyboard.pressed( "W" ) ) {
+          ico.translateZ( -0.1 );
+        }
+        if( keyboard.pressed( "A" ) ) {
+          ico.translateX( -0.1 );
+        }  
+        if( keyboard.pressed( "S" ) ) {
+          ico.translateZ( 0.1 );
+        }        
+        if( keyboard.pressed( "D" ) ) {
+          ico.translateX( 0.1 );
+        }
+        if( keyboard.pressed( "Z" ) ) {
+          pointLight.intensity += 0.01;
+        }
+        if( keyboard.pressed( "X" ) ) {
+          pointLight.intensity -= 0.01;
+        }
+          
+        controls.update();
+      }
+
+      render();
+    </script>
+  </body>
+</html>
