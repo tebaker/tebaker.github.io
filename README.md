@@ -8,5 +8,6 @@
 # CMPM163 Homework 1:
 * [3D Scene](tebaker.github.io/hw1/partA.html)
 * [Image Processing](tebaker.github.io/hw1/partB.html)
+* [Visual Effect](tebaker.github.io/pdfs/partD.html)
 
 # [Resume](tebaker.github.io/pdfs/resume.pdf)
