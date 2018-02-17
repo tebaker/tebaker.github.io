@@ -35,10 +35,13 @@
 	<script src="shaders/vs-heightTextureMap.js"></script>
 	<script src="shaders/fs-heightTextureMap.js"></script>
 
+	<script src="shaders/vs-waterHeightMap.js"></script>
+	<script src="shaders/fs-waterHeightMap.js"></script>
+
 	<!-- THREEjs -->
 	<script>
 
-		var container, renderer, scene, camera, constols;
+		var container, renderer, scene, camera, constols, carrot;
 
 		var texture1 = new THREE.TextureLoader().load( 'assets/map.png' );
 		var texture2 = new THREE.TextureLoader().load( 'assets/grass.png' );
@@ -83,7 +86,7 @@
 		    ] );
 
 			// creating plane
-			var PlaneGeometry = new THREE.PlaneGeometry( 5, 5, 300, 300 );
+			var planeGeometry = new THREE.PlaneGeometry( 5, 5, 300, 300 );
 
 			var planeUniform =  {
 				displaceAmt: { type: "f", value: 1.0       },
@@ -99,31 +102,65 @@
 				fragmentShader: fs_heightTextureMap,
 			} );
 
-			var plane = new THREE.Mesh( PlaneGeometry, planeMaterial );
+			var plane = new THREE.Mesh( planeGeometry, planeMaterial );
 			plane.material.side = THREE.DoubleSide;
 			plane.rotateX( -Math.PI/2 );
 			plane.rotateZ( Math.PI );
 
-			// creating carrot object
-			function loadObjects() {
-				var loader = new THREE.OBJLoader();
-				loader.load( 'assets/carrot.obj', function ( carrot ) {
-					var s = 2;
-					carrot.scale.set( s, s, s );
-					carrot.position.x += 0.5;
-					// carrot.position.y -= 0.5;
-					carrot.rotateX(Math.PI/4);
-					
-					// adding carrot object to the scene
-					scene.add( carrot );
+			// creating water plane
+			var waterPlaneGeometry = new THREE.PlaneGeometry( 5, 5, 300, 300 );
+
+			var waterPlaneMaterial = new THREE.RawShaderMaterial( {
+				vertexShader:   vs_waterHeightMap,
+				fragmentShader: fs_waterHeightMap,
+			} );
+
+			var waterPlane = new THREE.Mesh( waterPlaneGeometry, waterPlaneMaterial );
+			waterPlane.material.side = THREE.DoubleSide;
+			waterPlane.rotateX( -Math.PI/2 );
+			waterPlane.rotateZ( Math.PI );
+
+			// creating carrot
+			var loader = new THREE.OBJLoader();
+
+			var shinyMaterial = new THREE.RawShaderMaterial( {
+				vertexShader:   vs_enviromentMap,
+				fragmentShader: fs_enviromentMap,
+			});
+
+			loader.load( 'assets/carrot.obj', function ( carrot ) {
+				carrot.traverse( function ( child ) {
+					if ( child instanceof THREE.Mesh ) {
+						child.material = shinyMaterial;
+					}
 				} );
-			}
+				var s = 2.0;
+				carrot.scale.set( s, s, s );
 
+				scene.add( carrot );
+			} );
 
+			// creating rabbit
+			loader.load('assets/rabbit.obj',
+				function ( rabbit ) {
+					rabbit.traverse( function ( child ) {
+						if ( child instanceof THREE.Mesh ) {
+							child.material = shinyMaterial;
+						}
+					} );
+					var s = 0.005;
+					rabbit.scale.set( s, s, s );
+					rabbit.rotateX( -Math.PI/2 );
+					rabbit.rotateZ( Math.PI/4 );
+					rabbit.position.set( 0.0, 0.0, -1.6 );
+
+					scene.add( rabbit );
+				} );
 
 			// adding the objects to the scene
 		    scene.add( skybox );
 		    scene.add( plane );
+		    scene.add( waterPlane );
 
 		}// end - init()
 

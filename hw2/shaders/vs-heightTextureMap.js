@@ -20,7 +20,7 @@ var vs_heightTextureMap = `
 
     vec4 clr = texture2D(tPic, uv);
     
-    if( clr.r > 0.0 ) {
+    if( clr.r > 0.0 && clr.b <= 0.0 ) {
       vDisplace = clr.a;
     }
     else if( clr.b > 0.0 ) {
