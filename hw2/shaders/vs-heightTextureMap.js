@@ -30,7 +30,7 @@ var vs_heightTextureMap = `
       vDisplace = 0.0;
     }
 
-    vec3 newPosition = (position.xyz + normal.xyz * vDisplace).xyz;
+    vec3 newPosition = (position.xyz + normal.xyz * vDisplace * displaceAmt).xyz;
 
     gl_Position = projectionMatrix  * viewMatrix * modelMatrix  * vec4( newPosition, 1.0 );
   }`;

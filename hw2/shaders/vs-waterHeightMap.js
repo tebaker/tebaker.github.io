@@ -1,20 +1,21 @@
 var vs_waterHeightMap = `
-  uniform float in_val; //a value that changes slowly over time...
-  uniform float displaceAmt; //controls the amount of vertex displacement...
-
   uniform mat4 modelMatrix;
   uniform mat4 viewMatrix;
   uniform mat4 projectionMatrix;
 
   uniform vec3 cameraPosition;
 
-  attribute vec3 position; 
-  attribute vec3 normal; 
+  attribute vec3 position;
+  attribute vec3 normal;
 
   varying vec3 vI;
   varying vec3 vWorldNormal;
+
+  uniform float time; //a value that changes slowly over time...
+  uniform float displaceAmt; //controls the amount of vertex displacement...
   
   varying float noiseVal, noiseVal2;
+
 
   vec3 mod289(vec3 x)
   {
@@ -121,6 +122,27 @@ var vs_waterHeightMap = `
   }
 
   void main() {
+
+    // get a 3d noise using the position, low frequency
+    float lowFreq = pnoise( position.xyz + vec3(time), vec3(10.0) );
+    
+
+    // get a turbulent 3d noise using the normal, normal to high freq
+    float highFreq = -.5 * turbulence( 0.7 * (position.xyz + vec3(time)) );
+    
+    
+    //add high freq noise + low freq noise together
+    //  float displacement = lowFreq;
+    //  float displacement = highFreq;
+    float displacement = (lowFreq + highFreq) * displaceAmt;
+
+    noiseVal = highFreq;
+    noiseVal2 = lowFreq;
+    // move the position along the normal and transform it
+    vec3 newPosition = (position.xyz + normal.xyz * displacement).xyz;
+    
+
+
     vec4 mvPosition = viewMatrix * modelMatrix * vec4( position, 1.0 );
     vec4 worldPosition = modelMatrix * vec4( position, 1.0 );
 
@@ -128,21 +150,10 @@ var vs_waterHeightMap = `
 
     vI = worldPosition.xyz - cameraPosition;
 
-    // get a 3d noise using the position, low frequency
-    float lowFreq = pnoise( position.xyz + vec3(in_val), vec3(10.0) );
-   
-    // get a turbulent 3d noise using the normal, normal to high freq
-    float highFreq = -.5 * turbulence( 0.7 * (position.xyz + vec3(in_val)) );
-   
-    //add high freq noise + low freq noise together
-    //  float displacement = lowFreq;
-    //  float displacement = highFreq;
-    float displacement = (lowFreq + highFreq) * displaceAmt;
-   
-    noiseVal = highFreq;
-    noiseVal2 = lowFreq;
-    // move the position along the normal and transform it
-    vec3 newPosition = (position.xyz + normal.xyz * displacement).xyz;
+    gl_Position = projectionMatrix * mvPosition;
 
-    gl_Position = projectionMatrix * mvPosition * viewMatrix * modelMatrix  * vec4( newPosition, 1.0 );
+    // gl_Position = projectionMatrix * mvPosition * viewMatrix * modelMatrix  * vec4( newPosition, 1.0 );
+
+    // gl_Position = projectionMatrix * viewMatrix * modelMatrix  * vec4( position, 1.0 );
+
   }`;

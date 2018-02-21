@@ -22,6 +22,8 @@
 	<script src="js/OrbitControls.js"></script>
 	<script src="js/KeyboardState.js"></script>
 	<script src="js/OBJLoader.js"></script>
+
+	<!-- <script src="js/engine.js"></script> -->
 	<script src="js/create-skybox.js"></script>
 	
 	<!-- Loading Shaders -->
@@ -71,19 +73,15 @@
 			// orbit controls for mouse movement of the scene
 			controls = new THREE.OrbitControls( camera );
 
-			camera.position.set( 2, 3, -17);
-			controls.update();
-
-
 
 			// creating skybox
 			skybox = createSkybox( 1000, [
-		        'assets/skyboxes/skybox_2_px.png',
-		        'assets/skyboxes/skybox_2_nx.png',
-		        'assets/skyboxes/skybox_2_py.png',
-		        'assets/skyboxes/skybox_2_ny.png',
-		        'assets/skyboxes/skybox_2_pz.png',
-		        'assets/skyboxes/skybox_2_nz.png',
+		        'assets/skyboxes/skybox2_px.png',
+		        'assets/skyboxes/skybox2_nx.png',
+		        'assets/skyboxes/skybox2_py.png',
+		        'assets/skyboxes/skybox2_ny.png',
+		        'assets/skyboxes/skybox2_pz.png',
+		        'assets/skyboxes/skybox2_nz.png',
 		    ] );
 
 
@@ -92,7 +90,7 @@
 			planeGeometry = new THREE.PlaneGeometry( 50, 50, 300, 300 );
 
 			var planeUniform =  {
-				displaceAmt: { type: "f", value: 15.0       },
+				displaceAmt: { type: "f", value: 1.0       },
 				tPic:        { type: "t", value: texture1  },
 				tGrass:      { type: "t", value: texture2  },
 				tSnow:       { type: "t", value: texture3  },
@@ -116,8 +114,8 @@
 			waterPlaneGeometry = new THREE.PlaneGeometry( 50, 50, 300, 300 );
 
 			var waterPlaneUniorm = {
-				waterDisplaceAmt: { type: "f", value: 0.0 },
-				time:             { type: "f", value: 0.0 },
+				displaceAmt: { type: "f", value: 0.0 },
+				time:      { type: "f", value: 0.0 },
 			}
 
 			var waterPlaneMaterial = new THREE.RawShaderMaterial( {
@@ -132,7 +130,7 @@
 			waterPlane.rotateX( -Math.PI/2 );
 			waterPlane.rotateZ( Math.PI );
 
-			waterPlane.material.uniforms.waterDisplaceAmt.value += 0.075;
+			waterPlane.material.uniforms.displaceAmt.value += 0.075;
 
 			// creating carrot
 			var loader = new THREE.OBJLoader();
@@ -188,7 +186,6 @@
 	    function animate() {
 
 	    	waterPlane.material.uniforms.time.value += 0.01;
-	    	waterPlane.material.uniforms.waterDisplaceAmt.value += 15.00
 
 			requestAnimationFrame( animate );
 			controls.update();
