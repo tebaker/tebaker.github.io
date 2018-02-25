@@ -1,157 +1,400 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>three.js webgl - blender -json</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-  <style>
-  body {
-    background:#777;
-    padding:0;
-    margin:0;
-    overflow:hidden;
-  }
-
-  #info {
-    position: absolute;
-    top: 0px;
-    width: 100%;
-    color: #ffffff;
-  }
-
-</style>
+	<title>Outdoor 3D Scene</title>
+	<style>
+		body {
+			margin: 0;
+			background-color: rgb(237, 215, 247);
+		}
+		canvas {
+			width: 100%;
+			height: 100%;
+		}
+	</style>
 </head>
 <body>
+	<h2 class="name">Talon Baker</h2>
+	<div id="container"></div>
 
-  <script>
+	<!-- Loading JS -->
+	<script src="js/three.js"></script>
+	<script src="js/OrbitControls.js"></script>
+	<script src="js/OBJLoader.js"></script>
+	<script src="js/dat.gui.min.js"></script>
 
-      container = document.getElementById( 'container' );
+	<!-- GLSL code -->
+	<script id="skyboxVertexShader" type="x-shader/x-vertex">
+		varying vec3 v_pos;
 
-      camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 2000 );
-      var controls = new THREE.OrbitControls( camera );
-      camera.position.set( 0, 0, 5 );
-      controls.update();
+		void main() {
+		    v_pos = position;
+		    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+		}
+	</script>
+	
+	<script id="skyboxFragShader" type="x-shader/x-vertex">
+		varying vec3 v_pos;
+		uniform samplerCube skyBox;
 
-      scene = new THREE.Scene();
-      
-      var cubeMap = new THREE.CubeTextureLoader()
-      .setPath( './' )
-      .load( [
-        'assets/skybox_px.png',
-        'assets/skybox_nx.png',
-        'assets/skybox_py.png',
-        'assets/skybox_ny.png',
-        'assets/skybox_pz.png',
-        'assets/skybox_nz.png',
-      ] );
-      
-      var uniforms = { "tCube": { type: "t", value: cubeMap },
-      "tFlip": { type: "f", value: -1 } };
-      
-      var material = new THREE.RawShaderMaterial( {
-        uniforms: uniforms,
-        vertexShader: sb_vs,
-        fragmentShader: sb_fs
-      } );
+		void main() {
+		    gl_FragColor = textureCube(skyBox, v_pos);
+		}
+	</script>
 
-      material.depthWrite = false;
-      material.side = THREE.BackSide;
+	<script id="heightVertexShader" type="x-shader/x-vertex">
+		uniform mat4 modelMatrix;
+		uniform mat4 viewMatrix;
+		uniform mat4 projectionMatrix;
+		uniform sampler2D tPic;
 
-      var geometry = new THREE.BoxGeometry( 2000, 2000, 2000 );
+		attribute vec3 position;
+		attribute vec2 uv;
+		attribute vec3 normal;
 
-      skyMesh = new THREE.Mesh( geometry, material );
+		uniform float displaceAmt; //controls the amount of vertex displacement...
 
-      scene.add( skyMesh );      
+		varying float vDisplace; 
+		varying vec2 vUv;
 
-      var uniforms2 = {
-        tCube: { type: "t", value: cubeMap },
-      };
+		precision mediump float;
 
-      var material2 = new THREE.RawShaderMaterial( {
-        uniforms: uniforms2,
-        vertexShader: em_vs,
-        fragmentShader: em_fs
-      } );
+		void main() {
+			vUv = uv;
 
-      var loader = new THREE.OBJLoader();
+			vec4 clr = texture2D(tPic, uv);
 
-      loader.load( 'assets/carrot.obj', function ( object ) {
+			if( clr.r > 0.0 && clr.b <= 0.0 ) {
+				vDisplace = clr.a;
+			}
+			else if( clr.b > 0.0 ) {
+				vDisplace = -clr.a;
+			}
+			else {
+				vDisplace = 0.0;
+			}
 
-        object.traverse( function ( child ) {
-          if ( child instanceof THREE.Mesh ) {
-            child.material = material2;
-          }
-        } );
+			vec3 newPosition = (position.xyz + normal.xyz * vDisplace * displaceAmt).xyz;
 
-        var s = 2.0;
-        object.scale.set( s, s, s );
-        object.position.x += 1.0;
-        object.position.y -= 0.5;
+			gl_Position = projectionMatrix  * viewMatrix * modelMatrix  * vec4( newPosition, 1.0 );
+		}
+	</script>
+	
+	<script id="heightFragShader" type="x-shader/x-vertex">
+		precision mediump float;
 
-        carrot = object;
-        scene.add( carrot );
-      } );//end - load Obj
+		uniform sampler2D tGrass, tSnow, tHill, tBedrock;
 
-      // geometry
+		varying vec2 vUv;
+		varying float vDisplace;
 
-      var geometryPlane = new THREE.PlaneGeometry( 5, 5, 300, 300 );
+		void main() {
+			vec4 grass = texture2D(tGrass, vUv);
+			vec4 snow = texture2D(tSnow, vUv);
+			vec4 hill = texture2D(tHill, vUv);
+			vec4 bedrock = texture2D(tBedrock, vUv);
 
-      // material
+			float zOffset = vDisplace;
 
-      var uniforms1 =  {
-        displaceAmt: { type: "f", value: 0.0 },
-        tPic: { type: "t", value: texture1  },
-        tGrass: { type: "t", value: texture2  },
-        tSnow: { type: "t", value: texture3  },
-        tHill: { type: "t", value: texture4  },
-      };
+			vec4 mix1 = mix(grass, hill, min(1.0,zOffset*8.0));
+			vec4 mix2 = max(vec4(1.0), mix(hill, snow, zOffset) * 1.5);
+			vec4 mix3 = mix(mix1, mix2, zOffset);
 
-      var materialGround = new THREE.RawShaderMaterial( {
+			gl_FragColor = vec4( mix3.rgb, 1.0 );
+		}
+	</script>
 
-        uniforms: uniforms1,
-        vertexShader: vs,
-        fragmentShader: fs,
+	<script id="waterVertexShader" type="x-shader/x-vertex">
+		
+		precision mediump float;
 
-      } );
+		uniform mat4 modelMatrix, viewMatrix, projectionMatrix;
+		uniform vec3 cameraPosition;
+		uniform float fBias;
+		uniform float fScale;
+		uniform float fPower;
+		uniform float vDisplace;
+		uniform float displaceAmt;
+		uniform float mixMod;
+		uniform sampler2D pTex;
 
-      var ground = new THREE.Mesh( geometryPlane, materialGround );
-      ground.material.side = THREE.DoubleSide;
-      ground.rotateX(-Math.PI/3);
-      scene.add( ground );
+		uniform float waveWidth;
+		uniform float waveHeight;
+		uniform float time;
 
-      renderer = new THREE.WebGLRenderer();
-      renderer.setPixelRatio( window.devicePixelRatio );
-      renderer.setSize( window.innerWidth, window.innerHeight );
-      container.appendChild( renderer.domElement );
+		attribute vec3 position, normal;
+		attribute vec2 uv;
 
-      window.addEventListener( 'resize', onWindowResize, false );
-      document.addEventListener('mousemove', onDocumentMouseMove, false);
+		varying vec3 wPosition;
+		varying vec3 wNormal;
+		varying vec3 vI;
+		varying vec3 nI;
+		varying float reflectionFactor;
+		varying vec2 vUv;
+		varying float mixVal;
+		varying vec3 newNormal;
 
-    }// end - init()
+		void main(){
+			
+			float zDisplacement = (sin(waveWidth * position.x + time * 1.2) *
+									cos(waveWidth * position.y + time * 0.3) * waveHeight)
+								+
+								(sin(waveWidth * position.y + time * -0.5) *
+									cos(waveWidth * position.x + time * 2.1) * waveHeight);
 
-    function onWindowResize( event ) {
+			float rI = 0.01;
 
-      renderer.setSize( window.innerWidth, window.innerHeight );
+			wNormal = normalize(mat3(modelMatrix[0].xyz, modelMatrix[1].xyz, modelMatrix[2].xyz)*normal);
+			newNormal = normalize(vec3(wNormal.x + zDisplacement*rI, wNormal.y, wNormal.z + zDisplacement*rI));
 
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-    }
+			wPosition = (modelMatrix * vec4(position, 1.0)).xyz;
 
-    function animate() {
+			vI = wPosition - cameraPosition;
+			//nI = normalize((transpose(modelMatrix) * vec4(vI, 1.0)).xyz);
+			vUv = uv;
 
-      requestAnimationFrame( animate );
-      render();
-    }
+			vec4 clr = texture2D(pTex, vec2(vUv.x, vUv.y));
+			float vDisplace = mix(clr.g, clr.b, 0.5) * displaceAmt;
+			mixVal = mix(clr.g, clr.b, 0.5) * mixMod * (displaceAmt / 5.0);
 
-    function render() {
-      renderer.render( scene, camera );
-    }
+			reflectionFactor = fBias + fScale * pow(1.0 + dot(normalize(vI), wNormal), fPower);
 
-    function onDocumentMouseMove(event) {
-      event.preventDefault();
-    }
+			
+
+			wPosition = vec3(wPosition.x, zDisplacement, wPosition.z);
+
+			gl_Position = projectionMatrix * viewMatrix * vec4(wPosition, 1.0);
+		}
+
+	</script>
+
+	<script id="waterFragmentShader" type="x-shader/x-fragment">
+		
+		precision mediump float;
+
+		uniform samplerCube tCube;
+		uniform sampler2D gTex, hTex, sTex;
 
 
-  </script>
-</body>
+		varying vec3 wPosition;
+		varying vec3 wNormal;
+		varying vec3 newNormal;
+		varying vec3 vI;
+		varying vec3 nI;
+		varying float reflectionFactor;
+		varying vec2 vUv;
+		varying float mixVal;
+
+		void main(){
+
+			vec4 grass = texture2D(gTex, vUv);
+			vec4 hill = texture2D(hTex, vUv);
+			vec4 snow = texture2D(sTex, vUv);
+
+			vec4 mix1 = mix(grass, hill, min(1.0,zOffset*8.0));
+			vec4 mix2 = max(vec4(1.0), mix(hill, snow, zOffset) * 1.5);
+			vec4 mix3 = mix(mix1, mix2, zOffset);
+
+			vec3 reflection = reflect(vI, newNormal);
+
+			vec4 envColor = textureCube(tCube, vec3(reflection.x, reflection.yz));
+
+			gl_FragColor = vec4(mix(mix3.xyz, envColor.xyz, vec3(clamp(reflectionFactor, 0.0, 1.0))), 1.0);
+		}
+
+	</script>
+
+	<!-- THREEjs -->
+	<script>
+
+		//three js scene stuff
+		var container, camera, renderer, scene, controls;
+
+		var gui;
+		var guiOptions = {};
+
+		//shader stuff
+		var waterVS = document.getElementById('waterVertexShader').textContent;
+		var waterFS = document.getElementById('waterVertexShader').textContent;
+		
+		var heightVS = document.getElementById('heightVertexShader').textContent;
+		var heightFS = document.getElementById('heightFragShader').textContent;
+		
+		var skyboxVS = document.getElementById('skyboxVertexShader').textContent;
+		var skyboxFS = document.getElementById('skyboxFragShader').textContent;
+
+		//objects
+		var waterMesh, heightMesh, skyboxMesh, carrotMesh, bunnyMesh;
+
+		var heightUniform, waterUniform;
+
+		//texture stuff
+		var heightMap = new THREE.TextureLoader().load('assets/map.png');
+		var grassTexture = new THREE.TextureLoader().load('assets/grass.png');
+		var hillTexture = new THREE.TextureLoader().load('assets/hill.jpg');
+		var snowTexture = new THREE.TextureLoader().load('assets/snow.jpg');
+		var bedrockTexture = new THREE.TextureLoader().load('assets/bedrock.jpg');
+
+		init();
+		render();
+
+		function init() {
+			//getting container for scene
+			container = document.getElementById('container');
+
+			renderer = new THREE.WebGLRenderer();
+			renderer.setClearColor( 0x999999 );
+			renderer.setPixelRatio( window.devicePixelRatio );
+			renderer.setSize( window.innerWidth, window.innerHeight );
+			container.appendChild( renderer.domElement );
+
+			// defining the scene
+			scene = new THREE.Scene();
+
+			// defining the camrea
+			camera = new THREE.PerspectiveCamera(50, window.innerWidth/window.innerHeight, 0.1, 1000);
+
+			// orbit controls for mouse movement of the scene
+			controls = new THREE.OrbitControls( camera );
+
+			camera.position.set( 25, 50, -80);
+			controls.update();
+
+			// gui controls for options menu
+			gui = new dat.GUI({width: 350});
+
+			// start - create skybox
+			var sbCube = new THREE.BoxGeometry(1000, 1000, 1000);
+			var sbTex  = new THREE.CubeTextureLoader().load([
+		        'assets/skyboxes/interstellarPosX.png',
+		        'assets/skyboxes/interstellarNegX.png',
+		        'assets/skyboxes/interstellarPosY.png',
+		        'assets/skyboxes/interstellarNegY.png',
+		        'assets/skyboxes/interstellarPosZ.png',
+		        'assets/skyboxes/interstellarNegZ.png',
+		    ]);
+
+			var sbUniforms = {
+			    skyBox: { type: "t", value: sbTex },
+			}
+
+			var sbMaterial = new THREE.ShaderMaterial({
+			    uniforms: sbUniforms,
+			    vertexShader: skyboxVS,
+			    fragmentShader: skyboxFS,
+			});
+
+			sbMaterial.side = THREE.BackSide;
+
+			var skyboxMesh = new THREE.Mesh(sbCube, sbMaterial);
+			// end - create skybox
+
+			// start - create height map plane
+			guiOptions.displaceAmt = 17.0;
+			guiOptions.mixMod = 0.2;
+			guiOptions.waterLevel = 5;
+			guiOptions.fresnelBias = 0.5;
+			guiOptions.fresnelScale = 2;
+			guiOptions.fresnelPower = 2;
+			guiOptions.waveW = 0.5;
+			guiOptions.waveH = 0.5;
+
+			gui.add(guiOptions, "displaceAmt", 0, 50);
+			gui.add(guiOptions, "mixMod", 0, 1);
+			gui.add(guiOptions, "waterLevel", 0, 40);
+			gui.add(guiOptions, "fresnelBias", 0, 1);
+			gui.add(guiOptions, "fresnelScale", 1, 10);
+			gui.add(guiOptions, "fresnelPower", 1, 10);
+			gui.add(guiOptions, "waveW", 0, 2);
+			gui.add(guiOptions, "waveH", 0, 1);
+
+			var heightGeometry = new THREE.PlaneGeometry( 50, 50, 300, 300 );
+
+			heightUniform =  {
+				displaceAmt: { type: "f", value: 15.0 },
+				tPic:        { type: "t", value: heightMap },
+				tGrass:      { type: "t", value: grassTexture },
+				tSnow:       { type: "t", value: snowTexture },
+				tHill:       { type: "t", value: hillTexture },
+			};
+
+			var heightMaterial = new THREE.RawShaderMaterial( {
+				uniforms:       heightUniform,
+				vertexShader:   heightVS,
+				fragmentShader: heightFS,
+			} );
+
+			heightMesh = new THREE.Mesh( heightGeometry, heightMaterial );
+			heightMesh.material.side = THREE.DoubleSide;
+			heightMesh.rotateX( -Math.PI/2 );
+			heightMesh.rotateZ( Math.PI );
+			// end - create height map plane
+
+			// start - create water map plane
+			var waterGeometry = new THREE.PlaneGeometry( 50, 50, 300, 300 );
+
+			waterUniform =  {
+				displaceAmt: {type: "f", value: guiOptions.displaceAmt},
+				mixMod:      {type: "f", value: guiOptions.mixMod},
+				tCube:       {type: "t", value: skyboxMesh},
+				fBias:       {type: "f", value: guiOptions.fresnelBias},
+				fScale:      {type: "f", value: guiOptions.fresnelScale},
+				fPower:      {type: "f", value: guiOptions.fresnelPower},
+				pTex:        {type: "t", value: heightMap},
+				gTex:        {type: "t", value: grassTexture},
+				hTex:        {type: "t", value: hillTexture},
+				sTex:        {type: "t", value: snowTexture},
+				waveWidth:   {type: "f", value: guiOptions.waveW},
+				waveHeight:  {type: "f", value: guiOptions.waveH},
+				time: {type: "f", value: 1.0}
+			};
+
+			var waterMaterial = new THREE.RawShaderMaterial( {
+				uniforms:       waterUniform,
+				vertexShader:   waterVS,
+				fragmentShader: waterFS,
+			} );
+
+			waterMesh = new THREE.Mesh( waterGeometry, waterMaterial );
+			waterMesh.material.side = THREE.DoubleSide;
+			waterMesh.rotateX( -Math.PI/2 );
+			waterMesh.rotateZ( Math.PI );
+			// end - create height map plane
+
+			//adding objects to the scene
+			scene.add(skyboxMesh);
+			scene.add(heightMesh);
+			scene.add(waterMesh);
+		}// end - init()	
+
+		function render() {
+			var time = performance.now();
+
+			heightUniform.displaceAmt = {type: "f", value: guiOptions.displaceAmt};
+			heightUniform.mixMod = {type: "f", value: guiOptions.mixMod};
+			// waterUniform.displaceAmt = {type: "f", value: guiOptions.displaceAmt};
+			// waterUniform.mixMod = {type: "f", value: guiOptions.mixMod};
+
+			// waterUniform.fBias = {type: "f", value: guiOptions.fresnelBias};
+			// waterUniform.fScale = {type: "f", value: guiOptions.fresnelScale};
+			// waterUniform.fPower = {type: "f", value: guiOptions.fresnelPower};
+			// waterUniform.waveWidth = {type: "f", value: guiOptions.waveW};
+			// waterUniform.waveHeight = {type: "f", value: guiOptions.waveH};
+			// waterUniform.time.value = time * 0.001;
+			
+			heightMesh.position.y = -guiOptions.waterLevel;
+
+			requestAnimationFrame( render );
+			controls.update();
+			renderer.render( scene, camera );
+		}//end - animate
+
+		function onWindowResize(){
+			renderer.setSize(window.innerWidth, window.innerHeight);
+
+			camera.aspect = window.innerWidth/window.innerHeight;
+			camera.updateProjectionMatrix();
+		}
+	</script>
+	</body>
 </html>
