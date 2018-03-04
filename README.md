@@ -1,10 +1,5 @@
 # tebaker.github.io
 
-# Games
-* [Marbelous](http://marbelous.bitballoon.com/)
-* [Surrogate](https://tebaker.itch.io/surrogate)
-* [Fatty Bird Learns to Fly](https://tebaker.itch.io/bakerrunner)
-
 # CMPM163
 ## Homework 1:
 * [3D Scene](tebaker.github.io/hw1/partA.html)
@@ -13,5 +8,12 @@
 * [Visual Effect](tebaker.github.io/pdfs/partD.pdf)
 
 ## Homework 2:
+* [3D Outdoor Scene](tebaker.github.io/hw2/partA.html)
+* [Abstract Scene w/ Particles](tebaker.github.io/hw2/partB.html)
+
+# Games
+* [Marbelous](http://marbelous.bitballoon.com/)
+* [Surrogate](https://tebaker.itch.io/surrogate)
+* [Fatty Bird Learns to Fly](https://tebaker.itch.io/bakerrunner)
 
 # [Resume](tebaker.github.io/pdfs/resume.pdf)
