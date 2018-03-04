@@ -1,0 +1,197 @@
+<html>
+  <head>
+    <title>Abstract Scene Using Particles and Noise</title>
+    <style>
+      body {
+        margin: 0;
+        background-color: rgb(237, 215, 247);
+      }
+      canvas { width: 100%; height: 100% }
+    </style>
+  </head>
+  <body>
+		<h2 class="name">Talon Baker</h2>
+		<div id="container"></div>
+
+		<script src="js/three.js"></script>
+		<script src="js/OrbitControls.js"></script>
+		<script src="js/dat.gui.min.js"></script>
+		<script src="js/GPUParticleSystem.js"></script>
+		<script src="js/OBJLoader.js"></script>
+		<script src="js/MLTLoader.js"></script>
+
+		<script id="vertexShader" type="x-shader/x-vertex">
+			precision mediump float;
+			uniform mat4 projectionMatrix, viewMatrix, modelMatrix;
+			attribute vec3 position;
+
+			void main() {
+				gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position, 1.0);
+			}
+		</script>
+
+		<script id="fragmentShader" type="x-shader/x-fragment">
+			void main() {
+				gl_FragColor = vec4(1.0,0.0,0.0,0.1);
+			}
+		</script>
+
+		<script>
+			var camera, scene, renderer, container;
+			var controls;
+
+			var options, particleOptions;
+
+			var gui = new dat.GUI({width: 350});
+			var time = new THREE.Clock();
+			var particleSystem, tick = 0;
+			var tentacles = 15;
+
+			var jellyMesh = null;
+
+			var tex;
+			var vs, fs;
+
+			init();
+			render();
+
+			function init(){
+				container = document.getElementById('container');
+
+				vs = document.getElementById("vertexShader").textContent;
+				fs = document.getElementById("fragmentShader").textContent;
+
+				camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 10000);
+				camera.position.z = 15;
+
+				scene = new THREE.Scene();
+
+				// adding blue light for underwater effect
+				var light = new THREE.PointLight( 0xb541f4, 1, 100 );
+				light.position.set( 10, 10, 10 );
+				scene.add( light );
+
+				// adding jelly fish to scene
+				var mtlLoader = new THREE.MTLLoader();
+				mtlLoader.load( 'assets/jelly.mtl', function( materials ) {
+					materials.preload();
+
+					var objLoader = new THREE.OBJLoader();
+					objLoader.setMaterials( materials );
+
+					objLoader.load( 'assets/jelly.obj', function ( object ) {
+						object.scale.set(7, 7, 7);
+						jellyMesh = object;
+						scene.add( jellyMesh );
+					} );
+				} );
+
+				// loading for options and gui display
+				particleSystem = [tentacles];
+				options = [tentacles];
+
+				guiOptions = {
+					position: new THREE.Vector3(),
+					velocity: new THREE.Vector3(),
+					color: 0x42f468,
+					turbulence: 0.3,
+					lifetime: 0.8,
+					size: 5,
+					sizeRandomness: 0
+				};
+
+				for(var i=0; i < tentacles; i++){
+					particleSystem[i] = new THREE.GPUParticleSystem({
+						maxParticles: 20000
+					})
+				}
+
+				for(var i=0; i < tentacles; i++){
+					scene.add(particleSystem[i]);
+				}
+
+				for(var i=0; i < tentacles; i++){
+					options[i] = {
+						position: new THREE.Vector3(0, 0, 0),
+						velocity: new THREE.Vector3(
+							Math.random()*(0 - (-1)) + (-1),
+							Math.random()*(2 - (1)) + (1),
+							Math.random()*(1 - (0)) + (0)),
+						color: 0xFFFFFF,
+						turbulence: 1,
+						lifetime: 4.5,
+						size: 4.0,
+						sizeRandomness: 5
+					};
+				}
+
+				particleOptions = {
+					spawnRate: 750,
+					horizontalSpeed: 1.5,
+					verticalSpeed: 1.33,
+					timeScale: 0.55
+				}
+
+				gui.add(guiOptions, "size", 1, 20);
+				gui.add(guiOptions, "sizeRandomness", 0, 25);
+				gui.add(guiOptions, "lifetime", .1, 10);
+				gui.add(guiOptions, "turbulence", 0, 1);
+				gui.addColor(guiOptions, "color");
+				gui.add(particleOptions, "timeScale", -1, 1);
+
+
+				renderer = new THREE.WebGLRenderer();
+				renderer.setPixelRatio(window.devicePixelRatio);
+				renderer.setSize(window.innerWidth, window.innerHeight);
+				renderer.setClearColor(0xabdbe6,0.5);
+				container.appendChild(renderer.domElement);
+
+				controls = new THREE.OrbitControls(camera);
+
+				window.addEventListener('resize', onWindowResize, false);
+			}
+
+			function onWindowResize(){
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+
+				renderer.setSize(window.innerWidth, window.innerHeight);
+			}
+
+			function updateOptions(){
+				for(var i=0; i < tentacles; i++){
+					options[i].size = guiOptions.size;
+					options[i].sizeRandomness = guiOptions.sizeRandomness;
+					options[i].lifetime = guiOptions.lifetime;
+					options[i].turbulence = guiOptions.turbulence;
+					options[i].color = guiOptions.color;
+				}
+			}
+
+			function render(){
+				requestAnimationFrame(render);
+				updateOptions();
+
+				var delta = time.getDelta() * particleOptions.timeScale;
+
+				tick += delta;
+
+				if (tick < 0) tick = 0;
+
+				if (delta > 0) {
+					for(var j=0; j < tentacles; j++){
+						for(var i = 0; i < particleOptions.spawnRate * delta; i++){
+							particleSystem[j].spawnParticle(options[j]);
+						}
+					}
+				}
+
+				for(var i=0; i < tentacles; i++){
+					particleSystem[i].update(tick);
+				}
+
+				renderer.render(scene, camera);
+			}
+		</script>
+	</body>
+</html>

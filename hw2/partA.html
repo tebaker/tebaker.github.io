@@ -10,9 +10,9 @@
     </style>
   </head>
   <body>
-    <h2 class="name">Talon Baker</h2>
-	
-	<body>
+		<h2 class="name">Talon Baker</h2>
+
+		<body>
 
 		<div id="container"></div>
 
@@ -395,10 +395,6 @@
 				guiOptions.inVal = 0.0;
 				guiOptions.displamentAmount = 0.0;
 
-				gui.add(guiOptions, "displaceAmt", 0, 50);
-				gui.add(guiOptions, "mixMod", 0, 1);
-				gui.add(guiOptions, "waterLevel", -10, 40);
-				gui.add(guiOptions, "waveW", 0, 20);
 				gui.add(guiOptions, "waveH", -10, 10);
 
 
@@ -459,44 +455,6 @@
 				heightMesh.rotateZ(-Math.PI*2/3);
 				heightMesh.position.y = 1.0;
 				scene.add(heightMesh);
-
-
-				//adding ojects to the scene
-				// var loader = new THREE.OBJLoader();
-							
-				// loader.load( 'assets/carrot.obj', function ( object ) {
-					
-				// 	object.traverse( function ( child ) {
-				// 		if ( child instanceof THREE.Mesh ) {
-				// 			child.material = material2;
-				// 		}
-				// 	} );
-					
-				// 	var s = 2.0;
-				// 	object.scale.set( s, s, s );
-				// 	object.position.x += 1.0;
-				// 	object.position.y -= 0.5;
-
-				// 	carrot = object;
-				// 	scene.add( carrot );
-				// } );
-
-				// loader.load( 'assets/bunny.obj', function ( object ) {
-					
-				// 	object.traverse( function ( child ) {
-				// 		if ( child instanceof THREE.Mesh ) {
-				// 			child.material = material2;
-				// 		}
-				// 	} );
-					
-				// 	var s = 2.0;
-				// 	object.scale.set( s, s, s );
-				// 	object.position.x += 1.0;
-				// 	object.position.y -= 0.5;
-
-				// 	bunny = object;
-				// 	scene.add( bunny );
-				// } );
 
 				container.appendChild(renderer.domElement);
 				window.addEventListener('resize', onWindowResize, false);
