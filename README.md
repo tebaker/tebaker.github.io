@@ -11,6 +11,8 @@
 * [3D Outdoor Scene](tebaker.github.io/hw2/partA.html)
 * [Abstract Scene w/ Particles](tebaker.github.io/hw2/partB.html)
 
+## Homework 3:
+
 # Games
 * [Marbelous](http://marbelous.bitballoon.com/)
 * [Surrogate](https://tebaker.itch.io/surrogate)
