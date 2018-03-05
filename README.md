@@ -12,6 +12,8 @@
 * [Abstract Scene w/ Particles](tebaker.github.io/hw2/partB.html)
 
 ## Homework 3:
+* [3D Outdoor Scene](tebaker.github.io/hw3/partB.html)
+* [Final Project Planning](tebaker.github.io/pdfs/partC.pdf)
 
 # Games
 * [Marbelous](http://marbelous.bitballoon.com/)
