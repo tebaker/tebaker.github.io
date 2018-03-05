@@ -1,0 +1,286 @@
+<html>
+<head>
+	<title>Abstract Scene Using Particles and Noise</title>
+	<style>
+	body {
+		margin: 0;
+		background-color: rgb(237, 215, 247);
+	}
+	canvas { width: 100%; height: 100% }
+</style>
+</head>
+<body>
+	<h2 class="name">Talon Baker</h2>
+	<div id="container"></div>
+
+	<script src="js/three.js"></script>
+
+	<script id="vertexShader" type="x-shader/x-vertex">
+		uniform mat4 modelViewMatrix;
+		uniform mat4 projectionMatrix;
+
+		attribute vec3 position;
+		
+		void main() {
+			gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+		}
+	</script>
+
+	<script id="fragmentShader" type="x-shader/x-fragment">
+		// percision
+		precision mediump float;
+		precision mediump int;
+
+		uniform vec2 resolution;
+		uniform float time;
+
+		// shader constanst
+		const vec3 BACKGROUND_COLOR = vec3(0.0, 0.0, 0.0);
+		const vec3 CAMERA_POSITION = vec3(0.0, 0.0, 5.0);
+
+		const int MAX_MARCHING_STEPS = 255;
+		const float MIN_DIST = 0.0;
+		const float MAX_DIST = 100.0;
+		const float EPSILON = 0.0001;
+
+		// Forward declarations
+		vec4 rayMarch(vec3 position, vec3 targetDirection, float maxDistance);
+
+		// lots of shapes from 
+		// http://iquilezles.org/www/articles/distfunctions/distfunctions.htm
+		float sdSphere( vec3 p, float s) {
+			return length(p)-s;
+		}
+		float sdTorus( vec3 p, vec2 t ) {
+			vec2 q = vec2(length(p.xz)-t.x,p.y);
+			return length(q)-t.y;
+		}
+		float udRoundBox( vec3 p, vec3 b, float r ) {
+		  return length(max(abs(p)-b,0.0))-r;
+		}
+		float sdCylinder( vec3 p, vec3 c ) {
+		  return length(p.xz-c.xy)-c.z;
+		}
+		// Union
+		float opU( float d1, float d2 ) {
+			return min(d1,d2);
+		}
+		// Substraction
+		float opS( float d1, float d2 ) {
+			return max(-d1,d2);
+		}
+		// Intersection
+		float opI( float d1, float d2 ) {
+			return max(d1,d2);
+		}
+
+		// creating scene of two intersecting cylinders and moving circles
+		float scene(vec3 position) {
+			// sphere: position, radius
+			float sphere1 = sdSphere(position + vec3(0.0, 0.0, 0.0), 0.5);
+
+			// cylinder: position, x, y, radius
+			float cylinder1 = sdCylinder(position + vec3(0.0, 0.0, 0.0), vec3( 0.0, 0.0, 0.2 ));
+
+			// Combine the two spheres
+			float world = opS(sphere1, cylinder1);
+
+			float c = cos(time * 0.2);
+			float s = sin(time * 0.2);
+
+			// cylinder: position, x, y, radius * rotation
+			float cylinder2 = sdCylinder((vec4(position + vec3(0.0, 0.0, 0.0), 0.3) * mat4(
+				  c,   s,  -s, 0.0,
+				 -s,   c, 0.0, 0.0,
+				s, 0.0, c, 0.0,
+				0.0, 0.0, 0.0, 1.0)).xyz,
+
+				vec3( 0.0, 0.0, 0.2 )
+			);
+
+			world = opI(cylinder1, cylinder2);
+
+			// adding balls moving about the scene based on time
+			s = s / 2.0;
+			c = c / 2.0;
+			float sphere2 = sdSphere(position + vec3(s, 0.0, 0.0), 0.3);
+			float sphere3 = sdSphere(position + vec3(0.0, c, 0.0), 0.1);
+			float sphere4 = sdSphere(position + vec3(s, c, 0.0), 0.3);
+
+			// subtracting the new ball
+			world = opS(sphere2, world);
+			world = opS(sphere3, world);
+			world = opS(sphere4, world);
+
+			return world;
+		}
+
+		// modified from https://www.shadertoy.com/view/llt3R4
+		vec3 rayDirection(float fieldOfView, vec2 size, vec2 fragCoord) {
+			vec2 xy = fragCoord - size / 2.0;
+			float z = size.y / tan(radians(fieldOfView) / 2.0);
+			return normalize(vec3(xy, -z));
+		}
+
+		vec3 getNormal(vec3 p) {
+			// +- EPSILON and take the difference in each direction
+			return normalize(vec3(scene(vec3(p.x + EPSILON, p.yz)) - scene(vec3(p.x - EPSILON, p.yz)),
+				scene(vec3(p.x, p.y + EPSILON, p.z)) - scene(vec3(p.x, p.y - EPSILON, p.z)),
+				scene(vec3(p.xy, p.z + EPSILON)) - scene(vec3(p.xy, p.z - EPSILON))
+				));
+		}
+
+		vec3 phongLight(vec3 position, vec3 lightPosition, vec3 lightDiffuse) {
+			const vec3 lightSpecluar = vec3(0.4);
+			const float specluarIntensity = 10.0;
+
+			vec3 normal        = getNormal(position);
+			vec3 pointToLight  = normalize(lightPosition - position);
+			vec3 pointToCamera = normalize(CAMERA_POSITION - position);
+			vec3 reflection    = normalize(reflect(-pointToLight, normal));
+
+			float specular = dot(pointToLight, normal);
+			float diffuse  = dot(reflection, pointToCamera);
+
+			if (specular < 0.0) {
+				return vec3(0.0);
+			}
+
+			if (diffuse < 0.0) {
+				return specular * lightDiffuse;
+			}
+
+			return clamp(specular * lightDiffuse + lightSpecluar * pow(diffuse, specluarIntensity), 0.0, 1.0);
+		}
+
+		// adding light1 to scene
+		vec3 addLight(vec3 position, vec3 lightPosition, vec3 lightColor) {
+			if (rayMarch(position + normalize(lightPosition) * 0.1, lightPosition, distance(lightPosition, position)).w == -1.0) {
+				return phongLight(position, lightPosition, lightColor);
+			}
+			return vec3(0.0);
+		}
+
+		vec3 light(vec3 position) {
+			vec3 color = vec3(0.1);
+
+			// static light
+			vec3 lightPosition = vec3(1.0, -1.0, 1.0);
+			vec3 lightColor = vec3(0.0 / 151.0, 151.0 / 255.0, 255.0 / 255.0) * 0.5;
+			color += addLight(position, lightPosition, lightColor);
+
+			// moving light
+			lightPosition = vec3(5.0 * sin(time), 5.0 * cos(time), 0.0);
+			lightColor = vec3(151.0 / 255.0, 151.0 / 255.0, 255.0 / 255.0);
+			color += addLight(position, lightPosition, lightColor);
+
+			return color;
+		}
+
+		// lots of technical data I don't understand
+		vec4 rayMarch(vec3 position, vec3 targetDirection, float maxDistance) {
+			vec3 direction = normalize(targetDirection);
+			vec3 currentPosition = position;
+			vec3 lastPosition = position;
+			float lastDistance = scene(currentPosition);
+			float currentDistance;
+			
+			for (int i = 0; i < MAX_MARCHING_STEPS; i++) {
+				currentPosition = lastPosition + direction * lastDistance;
+				currentDistance = scene(currentPosition);
+			  
+			  	if (distance(position, currentPosition) > maxDistance) {
+			    	return vec4(currentPosition, -1.0);
+				}
+				if (currentDistance < EPSILON) {
+				    return vec4(currentPosition, distance(position, currentPosition));
+				}
+				lastDistance = currentDistance;
+				lastPosition = currentPosition;
+			}
+			return vec4(currentPosition, distance(position, currentPosition));
+		}
+
+		// color of obj closest
+		vec3 rayMarchLit(vec3 position, vec3 targetDirection) {
+			vec4 point = rayMarch(position, targetDirection, MAX_DIST);
+			
+		// upperbound case
+		if (point.w == -1.0) {
+			return BACKGROUND_COLOR;
+		}
+
+		return light(point.xyz);
+		}
+
+		void main() {
+			vec3 ray = rayDirection(45.0, resolution.xy, gl_FragCoord.xy);
+
+			gl_FragColor = vec4(rayMarchLit(CAMERA_POSITION, ray), 1.0);
+		}
+	</script>
+
+	<!-- THREE js code -->
+	<script>
+		var renderer, scene, camera, uniforms, options = {};
+
+		init();
+
+		function init() {
+			scene = new THREE.Scene();
+
+			var vs = document.getElementById( 'vertexShader' ).textContent;
+			var fs = document.getElementById( 'fragmentShader' ).textContent;
+			
+			uniforms = {
+				'time': {type: 'f', value: 1.0},
+				'resolution': {type: 'v2', value: new THREE.Vector2(window.innerWidth, window.innerHeight)}
+			}
+			
+			var material = new THREE.RawShaderMaterial( {
+				uniforms: uniforms,
+				vertexShader: vs,
+				fragmentShader: fs
+			} );
+
+			var plane = new THREE.Mesh(new THREE.PlaneGeometry( window.innerWidth, window.innerHeight ), material);
+			
+			scene.add(plane);
+			
+			camera = new THREE.OrthographicCamera(window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, 1, 1000);
+			camera.position.z = 1;
+
+			renderer = new THREE.WebGLRenderer();
+			renderer.setSize(window.innerWidth, window.innerHeight);
+			document.getElementById('container').appendChild( renderer.domElement );
+
+			window.addEventListener( 'resize', onWindowResize, false );
+
+			render();
+		}
+
+		function render() {
+			requestAnimationFrame(render);
+
+			var time = performance.now() * 0.001;
+
+			for (var i = 0; i < scene.children.length; i++) {
+				scene.children[i].material.uniforms = uniforms;
+				scene.children[i].material.uniforms.time.value = time;
+			}
+			renderer.render( scene, camera );
+		}
+
+		function onWindowResize( event ) {
+			camera.aspect = window.innerWidth / window.innerHeight;
+			camera.updateProjectionMatrix();
+			
+			uniforms.resolution = {type: 'v2', value: new THREE.Vector2(window.innerWidth, window.innerHeight)};
+
+			renderer.setSize( window.innerWidth, window.innerHeight );
+		}
+
+	</script>
+	</body>
+</html>
+
