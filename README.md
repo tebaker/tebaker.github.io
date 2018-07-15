@@ -16,6 +16,7 @@
 * [Final Project Planning](tebaker.github.io/pdfs/partC.pdf)
 
 # Games
+* [A Salt With a Deadly Weapon](tebaker.github.io/games/AWADW_final_draft.html)
 * [Marbelous](http://marbelous.bitballoon.com/)
 * [Surrogate](https://tebaker.itch.io/surrogate)
 * [Fatty Bird Learns to Fly](https://tebaker.itch.io/bakerrunner)
