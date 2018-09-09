@@ -1,5 +1,7 @@
 # tebaker.github.io
 
+# [Resume](tebaker.github.io/pdfs/resume.pdf)
+
 # CMPM163
 ## Homework 1:
 * [3D Scene](tebaker.github.io/hw1/partA.html)
@@ -20,5 +22,3 @@
 * [Marbelous](http://marbelous.bitballoon.com/)
 * [Surrogate](https://tebaker.itch.io/surrogate)
 * [Fatty Bird Learns to Fly](https://tebaker.itch.io/bakerrunner)
-
-# [Resume](tebaker.github.io/pdfs/resume.pdf)
