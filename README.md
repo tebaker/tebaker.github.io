@@ -1,10 +1,8 @@
-# tebaker.github.io
-
-# [Resume](tebaker.github.io/resume)
+# tebaker.github.io # [Resume](tebaker.github.io/resume)
 
 ## Games I've Created:
 
-### [A Salt With a Deadly Weapon - click to play](tebaker.github.io/games/salt.html)
+### [A Salt With a Deadly Weapon - click to play](https://tebaker.itch.io/salt)
 ![aswadwScreenshot](/images/aswadwImage.png)
 
 ### [Marbelous - click to play](http://marbelous.bitballoon.com/)
