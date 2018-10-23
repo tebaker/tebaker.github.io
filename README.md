@@ -1,6 +1,16 @@
 # tebaker.github.io
 
-# [Resume](tebaker.github.io/pdfs/resume.pdf)
+# [Resume](tebaker.github.io/resume)
+
+## Games
+![aswadwScreenshot](/images/aswadwImage.png)
+* [A Salt With a Deadly Weapon](tebaker.github.io/games/salt.html)
+![fattyBirdScreenshot](/images/fattyBirdImage.png)
+* [Marbelous](http://marbelous.bitballoon.com/)
+![assg1_screenshot](/images/marbelousImage.png)
+* [Surrogate](https://tebaker.itch.io/surrogate)
+![assg1_screenshot](/images/surrogateImage.png)
+* [Fatty Bird Learns to Fly](https://tebaker.itch.io/bakerrunner)
 
 # CMPM163
 ## Homework 1:
@@ -17,8 +27,3 @@
 * [SDF Scene](tebaker.github.io/hw3/partB.html)
 * [Final Project Planning](tebaker.github.io/pdfs/partC.pdf)
 
-# Games
-* [A Salt With a Deadly Weapon](tebaker.github.io/games/salt.html)
-* [Marbelous](http://marbelous.bitballoon.com/)
-* [Surrogate](https://tebaker.itch.io/surrogate)
-* [Fatty Bird Learns to Fly](https://tebaker.itch.io/bakerrunner)
