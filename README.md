@@ -2,18 +2,21 @@
 
 # [Resume](tebaker.github.io/resume)
 
-## Games
+## A Salt With a Deadly Weapon
 ![aswadwScreenshot](/images/aswadwImage.png)
-* [A Salt With a Deadly Weapon](tebaker.github.io/games/salt.html)
+* [Click here to play](tebaker.github.io/games/salt.html)
 
+### Marbelous
 ![fattyBirdScreenshot](/images/fattyBirdImage.png)
-* [Marbelous](http://marbelous.bitballoon.com/)
+* [Click here to play](http://marbelous.bitballoon.com/)
 
+### Surrogate
 ![assg1_screenshot](/images/marbelousImage.png)
-* [Surrogate](https://tebaker.itch.io/surrogate)
+* [Click here to play](https://tebaker.itch.io/surrogate)
 
-![assg1_screenshot](/images/surrogateImage.png)
-* [Fatty Bird Learns to Fly](https://tebaker.itch.io/bakerrunner)
+### Fatty Bird Learns to Fly
+![fattyBirdScreenshot](/images/surrogateImage.png)
+[Click here to play](https://tebaker.itch.io/bakerrunner)
 
 # CMPM163
 ## Homework 1:
