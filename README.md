@@ -5,10 +5,13 @@
 ## Games
 ![aswadwScreenshot](/images/aswadwImage.png)
 * [A Salt With a Deadly Weapon](tebaker.github.io/games/salt.html)
+
 ![fattyBirdScreenshot](/images/fattyBirdImage.png)
 * [Marbelous](http://marbelous.bitballoon.com/)
+
 ![assg1_screenshot](/images/marbelousImage.png)
 * [Surrogate](https://tebaker.itch.io/surrogate)
+
 ![assg1_screenshot](/images/surrogateImage.png)
 * [Fatty Bird Learns to Fly](https://tebaker.itch.io/bakerrunner)
 
