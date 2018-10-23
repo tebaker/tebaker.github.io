@@ -2,7 +2,9 @@
 
 # [Resume](tebaker.github.io/resume)
 
-## A Salt With a Deadly Weapon
+## Games I've Created:
+
+### A Salt With a Deadly Weapon
 ![aswadwScreenshot](/images/aswadwImage.png)
 * [Click here to play](tebaker.github.io/games/salt.html)
 
@@ -16,7 +18,7 @@
 
 ### Fatty Bird Learns to Fly
 ![fattyBirdScreenshot](/images/surrogateImage.png)
-[Click here to play](https://tebaker.itch.io/bakerrunner)
+* [Click here to play](https://tebaker.itch.io/bakerrunner)
 
 # CMPM163
 ## Homework 1:
