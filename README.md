@@ -3,7 +3,6 @@
 
 ## Games I've Created:
 -------------------- | --------------------
-
 ### [A Salt With a Deadly Weapon - click to play](https://tebaker.itch.io/salt)
 ![aswadwScreenshot](/images/aswadwImage.png) | ### [Marbelous - click to play](http://marbelous.bitballoon.com/)
 ![fattyBirdScreenshot](/images/marbelousImage.png)
