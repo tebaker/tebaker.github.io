@@ -6,8 +6,8 @@
     <img
       alt="talonImg"
       src="/images/talonImage.png"
-      width="350"
-      height="350"
+      width="325"
+      height="325"
     />
   </a>
 </p>
@@ -20,24 +20,24 @@
     <img
       alt="resumeImg"
       src="/images/cv128x128.png"
-      width="100"
-      height="100"
+      width="60"
+      height="60"
     />
   </a>
   <a href="https://github.com/tebaker">
     <img
       alt="gitImg"
       src="/images/git128x128.png"
-      width="100"
-      height="100"
+      width="60"
+      height="60"
     />
   </a>
   <a href="https://tebaker.itch.io/">
     <img
       alt="irchImg"
       src="/images/itch128x128.png"
-      width="110"
-      height="110"
+      width="60"
+      height="60"
     />
   </a>
 </p>
@@ -47,10 +47,10 @@
 | [A Salt With a Deadly Weapon](https://tebaker.itch.io/salt) | [Marbelous](http://marbelous.bitballoon.com/) |
 | - | - |
 | ![aswadwScreenshot](/images/aswadwImage.png) | ![fattyBirdScreenshot](/images/marbelousImage.png) |
-
 | [Surrogate](https://tebaker.itch.io/surrogate) | [Fatty Bird Learns to Fly](https://tebaker.itch.io/bakerrunner) |
-| - | - |
 | ![surrogateScreenshot](/images/surrogateImage.png) | ![fattyBirdScreenshot](/images/fattyBirdImage.png) |
+| [Rats In A Sewer - Card Game](/boardGames/RatsInASewer) | |
+| ![ratsInASewerScreenshot](/images/riasImage.png) | |
 
 ## Computer & Game Graphics
 * [3D Scene](tebaker.github.io/hw1/partA.html)
