@@ -2,11 +2,11 @@
 
 ## Games I've Created
 
-### [A Salt With a Deadly Weapon](https://tebaker.itch.io/salt) ______ [Marbelous](http://marbelous.bitballoon.com/)
+### [A Salt With a Deadly Weapon](https://tebaker.itch.io/salt) _____ [Marbelous](http://marbelous.bitballoon.com/)
 
 ![aswadwScreenshot](/images/aswadwImage.png)| ![fattyBirdScreenshot](/images/marbelousImage.png)
 
-### [Surrogate](https://tebaker.itch.io/surrogate) ____________________________ [Fatty Bird Learns to Fly](https://tebaker.itch.io/bakerrunner)
+### [Surrogate](https://tebaker.itch.io/surrogate) ___________________________ [Fatty Bird Learns to Fly](https://tebaker.itch.io/bakerrunner)
 
 ![surrogateScreenshot](/images/surrogateImage.png) | ![fattyBirdScreenshot](/images/fattyBirdImage.png)
 
