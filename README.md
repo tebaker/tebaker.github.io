@@ -1,4 +1,5 @@
-# tebaker.github.io # [Resume](tebaker.github.io/resume)
+# tebaker.github.io
+# [Resume](tebaker.github.io/resume)
 
 ## Games I've Created:
 
