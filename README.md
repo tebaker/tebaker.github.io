@@ -1,3 +1,13 @@
+<p align="center">
+  <a href="tebaker.com/resume">
+    <img
+      alt="talonImg"
+      src="/images/talonImage.png"
+      width="400"
+    />
+  </a>
+</p>
+
 # [Resume](tebaker.github.io/resume)
 
 ## Games
