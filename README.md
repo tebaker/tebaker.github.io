@@ -1,34 +1,7 @@
-<!DOCTYPE html>
-<head>
-<title>EmbeddedFont</title>
-<style type = "text/css">
-@font-face {
-font-family: "Miama";
-src: url("Miama.otf");
-}
-@font-face {
-font-family: "spray";
-src: url("ideoma_SPRAY.otf");
-}
-h1 {
-font-family: Miama;
-font-size: 300%;
-}
-h2 {
-font-family: spray;
-}
-</style>
-</head>
-<body>
-<h1>Embedded Font Demo</h1>
-<h2>Here's another custom font</h2>
-</body>
-</html>
-
 <p align="center">
-	Talon Baker
-</p>
-<p align="center">
+  <h1 align="center">
+  	Talon Baker
+  </h1>
   <a href="/resume">
     <img
       alt="talonImg"
@@ -37,6 +10,9 @@ font-family: spray;
       height="350"
     />
   </a>
+  <h2 align="center">
+  	Computer Science: Game Design
+  </h2>
 </p>
 
 # [Resume](tebaker.github.io/resume)
