@@ -11,9 +11,36 @@
     />
   </a>
 </p>
-<h2 align="center">
+<h3 align="center">
 	Computer Science: Game Design
-</h2>
+</h3>
+
+<p align="center">
+  <a href="/resume">
+    <img
+      alt="resumeImg"
+      src="/images/cv128x128.png"
+      width="128"
+      height="128"
+    />
+  </a>
+  <a href="https://github.com/tebaker">
+    <img
+      alt="gitImg"
+      src="/images/git128x128.png"
+      width="128"
+      height="128"
+    />
+  </a>
+  <a href="https://tebaker.itch.io/">
+    <img
+      alt="irchImg"
+      src="/images/itch128x128.png"
+      width="128"
+      height="128"
+    />
+  </a>
+</p>
 
 # [Resume](tebaker.github.io/resume)
 
