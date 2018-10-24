@@ -1,9 +1,13 @@
+<p>
+	Talon Baker
+</p>
 <p align="center">
-  <a href="tebaker.com/resume">
+  <a href="/resume">
     <img
       alt="talonImg"
       src="/images/talonImage.png"
-      width="400"
+      width="350"
+      height="350"
     />
   </a>
 </p>
