@@ -1,7 +1,7 @@
-<p align="center">
-  <h1 align="center">
+<h1 align="center">
   	Talon Baker
-  </h1>
+</h1>
+<p align="center">
   <a href="/resume">
     <img
       alt="talonImg"
@@ -10,10 +10,10 @@
       height="350"
     />
   </a>
-  <h2 align="center">
-  	Computer Science: Game Design
-  </h2>
 </p>
+<h2 align="center">
+	Computer Science: Game Design
+</h2>
 
 # [Resume](tebaker.github.io/resume)
 
