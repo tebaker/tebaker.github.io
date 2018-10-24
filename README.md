@@ -20,29 +20,27 @@
     <img
       alt="resumeImg"
       src="/images/cv128x128.png"
-      width="128"
-      height="128"
+      width="100"
+      height="100"
     />
   </a>
   <a href="https://github.com/tebaker">
     <img
       alt="gitImg"
       src="/images/git128x128.png"
-      width="128"
-      height="128"
+      width="100"
+      height="100"
     />
   </a>
   <a href="https://tebaker.itch.io/">
     <img
       alt="irchImg"
       src="/images/itch128x128.png"
-      width="128"
-      height="128"
+      width="110"
+      height="110"
     />
   </a>
 </p>
-
-# [Resume](tebaker.github.io/resume)
 
 ## Games
 
@@ -61,3 +59,5 @@
 * [3D Outdoor Scene](tebaker.github.io/hw2/partA.html)
 * [Abstract Scene w/ Particles](tebaker.github.io/hw2/partB.html)
 * [SDF Scene](tebaker.github.io/hw3/partB.html)
+
+# [Resume PDF download](tebaker.github.io/resume)
