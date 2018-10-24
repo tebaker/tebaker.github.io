@@ -1,12 +1,12 @@
-# tebaker.github.io | [Resume](tebaker.github.io/resume)
+# tebaker.github.io [Resume](tebaker.github.io/resume)
 
 ## Games I've Created
 
-### [A Salt With a Deadly Weapon](https://tebaker.itch.io/salt) ----- | [Marbelous](http://marbelous.bitballoon.com/)
+### [A Salt With a Deadly Weapon](https://tebaker.itch.io/salt) ..... | [Marbelous](http://marbelous.bitballoon.com/)
 
 ![aswadwScreenshot](/images/aswadwImage.png)| ![fattyBirdScreenshot](/images/marbelousImage.png)
 
-### [Surrogate](https://tebaker.itch.io/surrogate) --------------------------- | [Fatty Bird Learns to Fly](https://tebaker.itch.io/bakerrunner)
+### [Surrogate](https://tebaker.itch.io/surrogate) .............................. | [Fatty Bird Learns to Fly](https://tebaker.itch.io/bakerrunner)
 
 ![surrogateScreenshot](/images/surrogateImage.png) | ![fattyBirdScreenshot](/images/fattyBirdImage.png)
 
