@@ -1,3 +1,4 @@
+<link rel="icon" href="/images/faviconImage.png">
 <h1 align="center">
   	Talon Baker
 </h1>
