@@ -57,6 +57,11 @@
 | ![ratsInASewerScreenshot](/images/riasImage.png) | |
 
 ## Computer & Game Graphics
+
+| [OpenGL C++ Hex Board](https://github.com/tebaker/HexBoard) | |
+| - | - |
+| ![hexBoardScreenshot](/images/hexBoardImage.png) | |
+
 * [3D Scene](tebaker.github.io/hw1/partA.html)
 * [Image Processing](tebaker.github.io/hw1/partB.html)
 * [Game Of Life](tebaker.github.io/hw1/partC.html)
