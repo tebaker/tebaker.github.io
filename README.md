@@ -52,8 +52,8 @@
 | ![aswadwScreenshot](/images/aswadwImage.png) | ![fattyBirdScreenshot](/images/marbelousImage.png) |
 | [Surrogate](https://tebaker.itch.io/surrogate) | [Fatty Bird Learns to Fly](https://tebaker.itch.io/bakerrunner) |
 | ![surrogateScreenshot](/images/surrogateImage.png) | ![fattyBirdScreenshot](/images/fattyBirdImage.png) |
-| [Wacktory](https://drive.google.com/open?id=1iCpax1bILrpynfdsKJB_vZ1XjAnsPGAtsOHU67mLbac) | |
-| ![wacktoryScreenshot](/images/wacktoryImage2.png) | |
+| [Wacktory](https://drive.google.com/open?id=1iCpax1bILrpynfdsKJB_vZ1XjAnsPGAtsOHU67mLbac) | [Alternate Reality Game](https://www.youtube.com/watch?v=q4WQaD0bkjs&feature=youtu.be)|
+| ![wacktoryScreenshot](/images/wacktoryImage2.png) | ![ARGScreenshot](/images/dontforgetgoldie.png)|
 
 ## Analog Games
 
