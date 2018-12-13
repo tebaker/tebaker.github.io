@@ -53,7 +53,7 @@
 | [Surrogate](https://tebaker.itch.io/surrogate) | [Fatty Bird Learns to Fly](https://tebaker.itch.io/bakerrunner) |
 | ![surrogateScreenshot](/images/surrogateImage.png) | ![fattyBirdScreenshot](/images/fattyBirdImage.png) |
 | [Wacktory](https://drive.google.com/open?id=1iCpax1bILrpynfdsKJB_vZ1XjAnsPGAtsOHU67mLbac) | |
-| ![wacktoryScreenshot](/images/fattyBirdImage.png) | |
+| ![wacktoryScreenshot](/images/wacktoryImage2.png) | |
 
 ## Analog Games
 
